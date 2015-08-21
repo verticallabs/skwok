@@ -1,0 +1,21 @@
+{
+  "name": "al",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "chai": "^3.2.0",
+    "debug": "^2.2.0",
+    "event-stream": "^3.3.1",
+    "lodash": "^3.10.1",
+    "mocha": "^2.2.5",
+    "sculpt": "^0.1.7",
+    "stream-combiner": "^0.2.2"
+  }
+}
