@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require("lodash");
+var util = require('util');
 
 var States = {
   UNHANDLED: 'unhandled',
@@ -21,23 +22,28 @@ var Channels = {
   EMAIL: 'email'
 };
 
-function Message(options) {
-  options = options || {};
-
-  this.respond = options.responder.respond;
-
-  this.state = options.state || null;
-  this.type = options.type || null;
-  this.body = options.body || '';
-  this.from = options.from || null;
-  this.to = options.to || null;
-  this.channel = options.channel || null;
+function Message(attributes) {
+  _.extend(this, attributes);
+  if(this.body === undefined) {
+    throw new Error('Message must have body');
+  }
 }
 
-Message.prototype.matches = function(text) {
-  var lcBody = _.trim(this.body.toLowerCase());
-  var lcText = _.trim(text.toLowerCase());
-  return lcBody == lcText;
+Message.prototype.bodyMatches = function(strings) {
+  var downcasedStrings = _.map(strings, function(s) { return s.toLowerCase(); });
+  var downcasedBody = _.trim(this.body.toLowerCase());
+  return _.contains(downcasedStrings, downcasedBody);
+}
+
+Message.prototype.stateMatches = function(strings) {
+  var downcasedStrings = _.map(strings, function(s) { return s.toLowerCase(); });
+  var downcasedState = _.trim(this.state.toLowerCase());
+  return _.contains(downcasedStrings, downcasedState);
+}
+
+Message.prototype._debug = function() {
+  return _(this).pick('body channel type'.split(' ')).extend({ from: this.from._debug(), to: this.to._debug() }).value();
+  //return util.inspect(this, { depth: 4 });
 }
 
 Message.States = States;

@@ -1,10 +1,44 @@
-var streams = require('./src/streams');
-var handlers = require('./src/handlers');
-var responder = require('./src/responder');
-var es = require('event-stream')
+var debug = require('debug')('app');
+var messaging = require('./src/messaging');
+var consoleStream = require('./src/console_stream');
 
-var messages = new streams.ConsoleStream(new responder.Responder());
+var typist, app;
 
-process.stdin.pipe(messages)
-  .pipe(new handlers.Debug())
-  .pipe(new handlers.Help(['help']));
+var handler = new messaging.Chain(
+  messaging.Actions.debug(),
+  new messaging.Chain(
+    messaging.Filters.hasBody('help'), 
+    messaging.Actions.respond('hi'),
+    messaging.Actions.handled() 
+  ),
+  new messaging.Chain(
+    messaging.Filters.hasBody('stop'), 
+    messaging.Actions.setFromState('stopped'),
+    messaging.Actions.respond('stopping'),
+    messaging.Actions.handled() 
+  ),
+  new messaging.Chain(
+    messaging.Filters.hasBody('start'), 
+    messaging.Filters.hasFromState('stopped'), 
+    messaging.Actions.setFromState('normal'),
+    messaging.Actions.respond('starting'),
+    messaging.Actions.handled() 
+  )
+)
+
+var responder = new messaging.Responder();
+responder._send = function(message) {
+  debug(message._debug());
+  debug(message.to);
+}
+
+consoleStream.on('data', function(message) {
+  typist = typist || message.from;
+  app = app || message.to;
+
+  message.from = typist;
+  message.to = app;
+
+  message.responder = responder;
+  handler.handle(message);
+});
