@@ -1,6 +1,11 @@
 var debug = require('debug')('app');
 var messaging = require('../src/messaging');
 var User = require('../src/user').User;
+var Actions = messaging.Actions;
+var Filters = messaging.Filters;
+
+//PS - console ping pong lets you enter messages by typing into the console
+//it will respond to help, ping, start, and stop.  if you stop it, it will not longer respond to ping, but it can be started again.
 
 //mock users and store
 var typist = new User({
@@ -28,47 +33,47 @@ var receiver = new messaging.Receivers.Console('debug', function(message) {
   message.to = app;
 
   //handle messages with this chain
-  handler.handle(message);
+  chain.handle(message);
 });
 
 //create a responder with debug channel
 var responder = new messaging.Responders.Responder({
-  debug: new messaging.Responders.Debug()
+  debug: new messaging.Responders.Console()
 });
 
 //create the chain
-var handler = new messaging.Chain(
+var chain = new messaging.Chain(
   new messaging.Chain(
-    messaging.Filters.unhandled(), 
-    messaging.Filters.hasBody('help'), 
-    messaging.Actions.respond('hi', responder),
-    messaging.Actions.handled(),
-    messaging.Actions.save(store)
+    Filters.unhandled(), 
+    Filters.hasBody('help'), 
+    Actions.respond('hi', responder),
+    Actions.handled(),
+    Actions.save(store)
   ),
   new messaging.Chain(
-    messaging.Filters.unhandled(), 
-    messaging.Filters.hasBody('stop'), 
-    messaging.Actions.setFromState('stopped'),
-    messaging.Actions.respond('stopping', responder),
-    messaging.Actions.handled(),
-    messaging.Actions.save(store)
+    Filters.unhandled(), 
+    Filters.hasBody('stop'), 
+    Actions.setFromState('stopped'),
+    Actions.respond('stopping', responder),
+    Actions.handled(),
+    Actions.save(store)
   ),
   new messaging.Chain(
-    messaging.Filters.unhandled(), 
-    messaging.Filters.hasBody('start'), 
-    messaging.Filters.hasFromState('stopped'), 
-    messaging.Actions.setFromState('normal'),
-    messaging.Actions.respond('starting', responder),
-    messaging.Actions.handled(),
-    messaging.Actions.save(store)
+    Filters.unhandled(), 
+    Filters.hasBody('start'), 
+    Filters.hasFromState('stopped'), 
+    Actions.setFromState('normal'),
+    Actions.respond('starting', responder),
+    Actions.handled(),
+    Actions.save(store)
   ),
   new messaging.Chain(
-    messaging.Filters.unhandled(), 
-    messaging.Filters.hasBody('ping'), 
-    messaging.Filters.hasFromState('normal'), 
-    messaging.Actions.respond('pong', responder),
-    messaging.Actions.handled(),
-    messaging.Actions.save(store)
+    Filters.unhandled(), 
+    Filters.hasBody('ping'), 
+    Filters.hasFromState('normal'), 
+    Actions.respond('pong', responder),
+    Actions.handled(),
+    Actions.save(store)
   )
 );
 

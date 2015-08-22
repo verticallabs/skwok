@@ -41,7 +41,16 @@ DebugResponder.prototype._send = function(message) {
   debug(message.to);
 }
 
+function ConsoleResponder() {
+}
+util.inherits(ConsoleResponder, Responder);
+
+ConsoleResponder.prototype._send = function(message) {
+  console.log(message.body);
+}
+
 module.exports = {
   Responder: Responder,
-  Debug: DebugResponder 
+  Debug: DebugResponder,
+  Console: ConsoleResponder
 };
