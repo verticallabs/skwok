@@ -17,13 +17,9 @@ var Types = {
   OUTGOING: 'outgoing'
 };
 
-var Channels = {
-  SMS: 'sms',
-  EMAIL: 'email'
-};
-
 function Message(attributes) {
   _.extend(this, attributes);
+
   if(this.body === undefined) {
     throw new Error('Message must have body');
   }
@@ -55,7 +51,6 @@ Message.prototype._debug = function() {
 
 Message.States = States;
 Message.Types = Types;
-Message.Channels = Channels;
 
 module.exports = {
   Message: Message
