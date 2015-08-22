@@ -13,28 +13,29 @@ Responder.prototype.send = function(message) {
 }
 
 function Chain() {
-  this.fns = Array.prototype.slice.call(arguments);
+  this.subHandlers = Array.prototype.slice.call(arguments);
 }
 
 Chain.prototype.handle = function(message) {
-  //PS - a chain will run until the message is not returned
-  //at the end of the chain it will return the message if it was not handled
-  return Promise.reduce(this.fns, function(m, fn) {
+  //a chain will effectively stop after failing filters 
+  //a chain will always return the message
+  return Promise.reduce(this.subHandlers, function(m, h) {
     if(!m) {
-      return null;
+      return;
     }
 
-    if(typeof fn == 'object') {
-      return fn.handle(m); 
+    if(h instanceof Chain) {
+      return h.handle(m); 
     }
-    else if(typeof fn == 'function') {
-      return fn(m);
+    else if(typeof h == 'function') {
+      return h(m);
+    }
+    else {
+      throw new Error('bad object in chain: ' + util.inspect(h));
     }
   }, message)
     .then(function() {
-      if(message.state !== Message.States.HANDLED) {
-        return message;
-      }
+      return message;
     })
 }
 
@@ -42,6 +43,8 @@ module.exports = {
   Message: Message,
   Responder: Responder,
   Chain: Chain,
+  Responders: require('./responders'),
+  Receivers: require('./receivers'),
   Filters: require('./filters'),
   Actions: require('./actions')
 };

@@ -1,13 +1,11 @@
-var debug = require('debug')('filters');
 var util = require('util');
 var _ = require('lodash');
 
 function hasState() {
+  var debug = require('debug')('filters:hasState');
   var states = Array.prototype.slice.call(arguments);
 
   return function(message) {
-    debug('hasState')
-
     if(message.stateMatches(states)) {
       return message;
     }
@@ -15,11 +13,10 @@ function hasState() {
 }
 
 function hasFromState() {
+  var debug = require('debug')('filters:hasFromState');
   var states = Array.prototype.slice.call(arguments);
 
   return function(message) {
-    debug('hasFromState')
-
     if(message.from.stateMatches(states)) {
       return message;
     }
@@ -28,12 +25,20 @@ function hasFromState() {
 
 
 function hasBody() {
+  var debug = require('debug')('filters:hasFromState');
   var bodies = Array.prototype.slice.call(arguments);
 
   return function(message) {
-    debug('hasBody')
-
     if(message.bodyMatches(bodies)) {
+      return message;
+    }
+  }
+}
+
+function unhandled() {
+  var debug = require('debug')('filters:unhandled');
+  return function(message) {
+    if(!message.handled) {
       return message;
     }
   }
@@ -43,4 +48,5 @@ module.exports = {
   hasState: hasState,
   hasFromState: hasFromState,
   hasBody: hasBody,
+  unhandled: unhandled
 };

@@ -42,8 +42,15 @@ Message.prototype.stateMatches = function(strings) {
 }
 
 Message.prototype._debug = function() {
-  return _(this).pick('body channel type'.split(' ')).extend({ from: this.from._debug(), to: this.to._debug() }).value();
-  //return util.inspect(this, { depth: 4 });
+  var debugObj = _.pick(this, 'body channel type state'.split(' '))
+  if(this.from) { 
+    _.extend(debugObj, { from: this.from._debug() });
+  }
+  if(this.to) { 
+    _.extend(debugObj, { to: this.to._debug() });
+  }
+
+  return debugObj;
 }
 
 Message.States = States;
