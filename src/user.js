@@ -13,7 +13,6 @@ function User(attributes) {
 User.prototype.stateMatches = function(strings) {
   var downcasedStrings = _.map(strings, function(s) { return s.toLowerCase(); });
   var downcasedState = _.trim(this.state.toLowerCase());
-console.log(this);
   return _.contains(downcasedStrings, downcasedState);
 }
 

@@ -3,19 +3,28 @@ var util = require('util');
 var _ = require('lodash');
 var Message = require('./message').Message;
 
-function respond(body) {
+function save(storeFn) {
+  return function(message) {
+    storeFn(message);
+    return message;
+  }
+}
+
+function respond(body, responder) {
   return function(message) {
     debug('respond');
 
-    if(!message.responder) {
-      throw new Error('no responder declared on message');
+    if(!responder) {
+      throw new Error('no responder declared');
     }
-    message.responder.send(new Message({
+
+    responder.send(new Message({
       to: message.from,
       from: message.to,
       body: body,
       channel: message.channel
     }));
+
     return message;
   }
 }
@@ -49,6 +58,7 @@ module.exports = {
   respond: respond,
   setFromState: setFromState,
   handled: handled,
+  save: save,
   debug: debugAction
 };
 

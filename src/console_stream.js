@@ -3,7 +3,6 @@
 var util = require('util');
 var Duplex = require('stream').Duplex;
 var Message = require('./message').Message;
-var User = require('./user').User;
 
 function ConsoleStream() {
   Duplex.call(this, { objectMode: true });
@@ -25,18 +24,6 @@ ConsoleStream.prototype._write = function(chunk, encoding, done) {
     type: Message.Types.INCOMING,
     body: string,
     channel: 'console',
-    from: new User({
-      name: 'Typist',
-      addresses: {
-        console: 'keyboard'
-      } 
-    }),
-    to: new User({
-      name: 'App',
-      addresses: {
-        console: 'cpu'
-      } 
-    }),
   });
   this.push(message);
 

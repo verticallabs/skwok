@@ -17,6 +17,8 @@ function Chain() {
 }
 
 Chain.prototype.handle = function(message) {
+  //PS - a chain will run until the message is not returned
+  //at the end of the chain it will return the message if it was not handled
   return Promise.reduce(this.fns, function(m, fn) {
     if(!m) {
       return null;
