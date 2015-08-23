@@ -1,11 +1,10 @@
 var debug = require('debug')('app');
 var _ = require('lodash');
 var time = require('../src/time');
-var messaging = require('../src/messaging');
-var User = require('../src/user').User;
-var Actions = messaging.Actions;
-var Filters = messaging.Filters;
-var Message = messaging.Message;
+
+var skwok = require('../index');
+var User = skwok.User;
+var Message = skwok.Message;
 
 console.log('console-send-scheduled');
 console.log('will respond to messages like "1 hi".  the number is the number of seconds to wait before sending the message');
@@ -29,7 +28,7 @@ var app = new User({
 var messages = [];
 
 //create a console receiver on debug channel
-var receiver = new messaging.Receivers.Console('debug', function(message) {
+var receiver = new skwok.Receivers.Console('debug', function(message) {
   message.from = typist;
   message.to = app;
   message.state = Message.States.PENDING;
@@ -41,16 +40,16 @@ var receiver = new messaging.Receivers.Console('debug', function(message) {
 });
 
 //create a sender with debug channel
-var sender = new messaging.Senders.Sender({
-  debug: new messaging.Senders.Console()
+var sender = new skwok.Senders.Sender({
+  debug: new skwok.Senders.Console()
 });
 
 //create the chain
-var chain = new messaging.Chain(
-  Filters.hasState(Message.States.PENDING), 
-  Filters.sendTimeIsInPast(),
-  Actions.debug(),
-  Actions.send(sender)
+var chain = new skwok.Chain(
+  Message.Filters.hasState(Message.States.PENDING), 
+  Message.Filters.sendTimeIsInPast(),
+  Message.Actions.debug(),
+  Message.Actions.send(sender)
 );
 
 //every second run each message through the chain

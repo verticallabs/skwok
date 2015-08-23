@@ -1,8 +1,7 @@
 var debug = require('debug')('app');
-var messaging = require('../src/messaging');
-var User = require('../src/user').User;
-var Actions = messaging.Actions;
-var Filters = messaging.Filters;
+var skwok = require('../index');
+var User = skwok.User;
+var Message = skwok.Message;
 
 console.log("console-ping-pong");
 console.log("it will respond to help, ping, start, and stop.  if you stop it, it will not longer respond to ping, but it can be started again.");
@@ -28,7 +27,7 @@ function store(message) {
 }
 
 //create a console receiver on debug channel
-var receiver = new messaging.Receivers.Console('debug', function(message) {
+var receiver = new skwok.Receivers.Console('debug', function(message) {
   message.from = typist;
   message.to = app;
 
@@ -37,43 +36,43 @@ var receiver = new messaging.Receivers.Console('debug', function(message) {
 });
 
 //create a sender with debug channel
-var sender = new messaging.Senders.Sender({
-  debug: new messaging.Senders.Console()
+var sender = new skwok.Senders.Sender({
+  debug: new skwok.Senders.Console()
 });
 
 //create the chain
-var chain = new messaging.Chain(
-  new messaging.Chain(
-    Filters.unhandled(), 
-    Filters.hasBody('help'), 
-    Actions.respond('hi', sender),
-    Actions.handled(),
-    Actions.save(store)
+var chain = new skwok.Chain(
+  new skwok.Chain(
+    Message.Filters.unhandled(), 
+    Message.Filters.hasBody('help'), 
+    Message.Actions.respond('hi', sender),
+    Message.Actions.handled(),
+    Message.Actions.save(store)
   ),
-  new messaging.Chain(
-    Filters.unhandled(), 
-    Filters.hasBody('stop'), 
-    Actions.setFromState('stopped'),
-    Actions.respond('stopping', sender),
-    Actions.handled(),
-    Actions.save(store)
+  new skwok.Chain(
+    Message.Filters.unhandled(), 
+    Message.Filters.hasBody('stop'), 
+    Message.Actions.setFromState('stopped'),
+    Message.Actions.respond('stopping', sender),
+    Message.Actions.handled(),
+    Message.Actions.save(store)
   ),
-  new messaging.Chain(
-    Filters.unhandled(), 
-    Filters.hasBody('start'), 
-    Filters.hasFromState('stopped'), 
-    Actions.setFromState('normal'),
-    Actions.respond('starting', sender),
-    Actions.handled(),
-    Actions.save(store)
+  new skwok.Chain(
+    Message.Filters.unhandled(), 
+    Message.Filters.hasBody('start'), 
+    Message.Filters.hasFromState('stopped'), 
+    Message.Actions.setFromState('normal'),
+    Message.Actions.respond('starting', sender),
+    Message.Actions.handled(),
+    Message.Actions.save(store)
   ),
-  new messaging.Chain(
-    Filters.unhandled(), 
-    Filters.hasBody('ping'), 
-    Filters.hasFromState('normal'), 
-    Actions.respond('pong', sender),
-    Actions.handled(),
-    Actions.save(store)
+  new skwok.Chain(
+    Message.Filters.unhandled(), 
+    Message.Filters.hasBody('ping'), 
+    Message.Filters.hasFromState('normal'), 
+    Message.Actions.respond('pong', sender),
+    Message.Actions.handled(),
+    Message.Actions.save(store)
   )
 );
 

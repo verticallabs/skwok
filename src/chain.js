@@ -1,9 +1,6 @@
 var debug = require('debug')('messaging');
 var util = require('util');
-var _ = require('lodash');
 var Promise = require("bluebird");
-var Message = require('./message').Message;
-var User = require('./user').User;
 
 function Chain() {
   this.subHandlers = Array.prototype.slice.call(arguments);
@@ -33,11 +30,5 @@ Chain.prototype.handle = function(message) {
 }
 
 module.exports = {
-  Message: Message,
-  User: User,
   Chain: Chain,
-  Senders: require('./senders'),
-  Receivers: require('./receivers'),
-  Filters: require('./filters'),
-  Actions: require('./actions')
 };

@@ -2,7 +2,7 @@
 
 var _ = require("lodash");
 var util = require('util');
-var time = require('./time');
+var time = require('../time');
 
 var States = {
   UNHANDLED: 'unhandled',
