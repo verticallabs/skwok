@@ -10,7 +10,7 @@ var Message = messaging.Message;
 console.log('console-send-scheduled');
 console.log('will respond to messages like "1 hi".  the number is the number of seconds to wait before sending the message');
 
-//mock users and store
+//mock users
 var typist = new User({
   name: 'Typist',
   state: 'normal',
@@ -53,13 +53,9 @@ var chain = new messaging.Chain(
   Actions.send(sender)
 );
 
+//every second run each message through the chain
 setInterval(function() {
-  _.each(messages, function(m) { 
-    debug(m.body + ' ' + m.state + ' ' + m.sendTime.format()); 
-  });
-
   _.each(messages, function(message) {
-    //handle messages with this chain
     chain.handle(message);
   });
 }, 1000);

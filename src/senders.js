@@ -30,11 +30,10 @@ Sender.prototype.send = function(message) {
   if(!address) {
     throw new Error('no address for recipient on channel ' + message.channel);
   }
+  
+  message.state = Message.States.SENDING;
   return Promise.try(function() {
     return channelSender._send(message);
-  })
-  .then(function(m) {
-    message.state = Message.States.SENDING;
   });
 }
 
