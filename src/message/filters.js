@@ -12,12 +12,12 @@ function hasState() {
   }
 }
 
-function hasFromState() {
-  var debug = require('debug')('filters:hasFromState');
+function hasUserState() {
+  var debug = require('debug')('filters:hasUserState');
   var states = Array.prototype.slice.call(arguments);
 
   return function(message) {
-    if(message.from.stateMatches(states)) {
+    if(message.user.stateMatches(states)) {
       return message;
     }
   }
@@ -25,7 +25,7 @@ function hasFromState() {
 
 
 function hasBody() {
-  var debug = require('debug')('filters:hasFromState');
+  var debug = require('debug')('filters:hasBody');
   var bodies = Array.prototype.slice.call(arguments);
 
   return function(message) {
@@ -55,7 +55,7 @@ function sendTimeIsInPast() {
 
 module.exports = {
   hasState: hasState,
-  hasFromState: hasFromState,
+  hasUserState: hasUserState,
   sendTimeIsInPast: sendTimeIsInPast,
   hasBody: hasBody,
   unhandled: unhandled

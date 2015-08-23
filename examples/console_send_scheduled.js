@@ -17,20 +17,11 @@ var typist = new User({
     debug: 'keyboard'
   } 
 });
-var app = new User({
-  name: 'App',
-  state: 'normal',
-  addresses: {
-    debug: 'app'
-  } 
-});
-
 var messages = [];
 
 //create a console receiver on debug channel
 var receiver = new skwok.ChannelReceivers.ConsoleReceiver('debug', function(message) {
-  message.from = typist;
-  message.to = app;
+  message.user = typist;
   message.state = Message.States.PENDING;
 
   var add = Number(message.body.split(' ')[0]);

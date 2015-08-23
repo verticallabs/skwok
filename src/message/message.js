@@ -46,11 +46,8 @@ Message.prototype.sendTimeIsInPast = function() {
 Message.prototype._debug = function() {
   var args = Array.prototype.slice.call(arguments);
   var debugObj = _.pick(this, 'body channel type state'.split(' ').concat(args))
-  if(this.from) { 
-    _.extend(debugObj, { from: this.from._debug() });
-  }
-  if(this.to) { 
-    _.extend(debugObj, { to: this.to._debug() });
+  if(this.user) { 
+    _.extend(debugObj, { user: this.user._debug() });
   }
 
   return debugObj;

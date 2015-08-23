@@ -14,22 +14,13 @@ var typist = new User({
     debug: 'keyboard'
   } 
 });
-var app = new User({
-  name: 'App',
-  state: 'normal',
-  addresses: {
-    debug: 'app'
-  } 
-});
 function store(message) {
-  typist = message.from;
-  app = message.to;
+  typist = message.user;
 }
 
 //create a console receiver on debug channel
 var receiver = new skwok.ChannelReceivers.ConsoleReceiver('debug', function(message) {
-  message.from = typist;
-  message.to = app;
+  message.user = typist;
 
   //handle messages with this chain
   chain.handle(message);
@@ -52,7 +43,8 @@ var chain = new skwok.Chain(
   new skwok.Chain(
     Message.Filters.unhandled(), 
     Message.Filters.hasBody('stop'), 
-    Message.Actions.setFromState('stopped'),
+    Message.Filters.hasUserState('normal'), 
+    Message.Actions.setUserState('stopped'),
     Message.Actions.respond('stopping', sender),
     Message.Actions.handled(),
     Message.Actions.save(store)
@@ -60,8 +52,8 @@ var chain = new skwok.Chain(
   new skwok.Chain(
     Message.Filters.unhandled(), 
     Message.Filters.hasBody('start'), 
-    Message.Filters.hasFromState('stopped'), 
-    Message.Actions.setFromState('normal'),
+    Message.Filters.hasUserState('stopped'), 
+    Message.Actions.setUserState('normal'),
     Message.Actions.respond('starting', sender),
     Message.Actions.handled(),
     Message.Actions.save(store)
@@ -69,7 +61,7 @@ var chain = new skwok.Chain(
   new skwok.Chain(
     Message.Filters.unhandled(), 
     Message.Filters.hasBody('ping'), 
-    Message.Filters.hasFromState('normal'), 
+    Message.Filters.hasUserState('normal'), 
     Message.Actions.respond('pong', sender),
     Message.Actions.handled(),
     Message.Actions.save(store)

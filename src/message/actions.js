@@ -18,8 +18,7 @@ function respond(body, sender) {
     }
 
     sender.send(new Message({
-      to: message.from,
-      from: message.to,
+      user: message.user,
       body: body,
       channel: message.channel
     }));
@@ -41,10 +40,10 @@ function send(sender) {
 }
 
 
-function setFromState(state) {
-  var debug = require('debug')('action:setFromState');
+function setUserState(state) {
+  var debug = require('debug')('action:setUserState');
   return function(message) {
-    message.from.state = state;
+    message.user.state = state;
     return message;
   }
 }
@@ -70,7 +69,7 @@ function handled() {
 
 module.exports = {
   respond: respond,
-  setFromState: setFromState,
+  setUserState: setUserState,
   handled: handled,
   save: save,
   send: send,

@@ -21,13 +21,11 @@ Sender.prototype.send = function(message) {
     throw new Error('no responder for channel: ' + message.channel);
   }
 
-  var to = message.to;
-  if(!to) {
+  if(!message.user) {
     throw new Error('no recipient for message');
   }
 
-  var address = to.addresses[message.channel]; 
-  if(!address) {
+  if(!message.user.addresses[message.channel]) {
     throw new Error('no address for recipient on channel ' + message.channel);
   }
   
