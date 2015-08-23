@@ -48,7 +48,6 @@ var sender = new skwok.Sender({
 var chain = new skwok.Chain(
   Message.Filters.hasState(Message.States.PENDING), 
   Message.Filters.sendTimeIsInPast(),
-  Message.Actions.debug(),
   Message.Actions.send(sender)
 );
 

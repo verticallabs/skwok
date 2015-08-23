@@ -49,9 +49,12 @@ function setFromState(state) {
   }
 }
 
-function debugAction() {
+function debugAction(name) {
   var debug = require('debug')('action:debug');
   return function(message) {
+    if(name) { 
+      debug(name); 
+    }
     debug(message._debug());
     return message;
   }
