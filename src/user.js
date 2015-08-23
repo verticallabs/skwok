@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require("lodash");
+var debug = require('debug')('user');
 
 function User(attributes) {
   this.state = '';
@@ -19,6 +20,31 @@ User.prototype.stateMatches = function(strings) {
 User.prototype._debug = function() {
   return _.pick(this, _.isString);
 }
+
+function setState(state) {
+  return function(message) {
+    message.user.state = state;
+    return message;
+  }
+}
+
+function hasState() {
+  var states = Array.prototype.slice.call(arguments);
+
+  return function(message) {
+    if(message.user.stateMatches(states)) {
+      return message;
+    }
+  }
+}
+
+User.Actions = {
+  setState: setState 
+};
+
+User.Filters = {
+  hasState: hasState
+};
 
 module.exports = {
   User: User

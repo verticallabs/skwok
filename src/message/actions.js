@@ -1,17 +1,9 @@
+var debug = require('debug')('message:actions');
 var util = require('util');
 var _ = require('lodash');
 var Message = require('./message').Message;
 
-function save(storeFn) {
-  var debug = require('debug')('action:save');
-  return function(message) {
-    storeFn(message);
-    return message;
-  }
-}
-
 function respond(body, sender) {
-  var debug = require('debug')('action:respond');
   return function(message) {
     if(!sender) {
       throw new Error('no senderdeclared');
@@ -28,28 +20,21 @@ function respond(body, sender) {
 }
 
 function send(sender) {
-  var debug = require('debug')('action:send');
   return function(message) {
     if(!sender) {
       throw new Error('no responder declared');
     }
 
-    sender.send(message);
-    return message;
+    return sender.send(message)
+      .then(function() {
+        return message;
+      });
   }
 }
 
-
-function setUserState(state) {
-  var debug = require('debug')('action:setUserState');
-  return function(message) {
-    message.user.state = state;
-    return message;
-  }
-}
 
 function debugAction(name) {
-  var debug = require('debug')('action:debug');
+  var debug = require('debug')('messages:debug');
   return function(message) {
     if(name) { 
       debug(name); 
@@ -60,7 +45,6 @@ function debugAction(name) {
 }
 
 function handled() {
-  var debug = require('debug')('action:handled');
   return function(message) {
     message.state = Message.States.HANDLED;
     return message;
@@ -69,9 +53,7 @@ function handled() {
 
 module.exports = {
   respond: respond,
-  setUserState: setUserState,
   handled: handled,
-  save: save,
   send: send,
   debug: debugAction
 };
