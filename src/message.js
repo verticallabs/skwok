@@ -2,11 +2,13 @@
 
 var _ = require("lodash");
 var util = require('util');
+var time = require('./time');
 
 var States = {
   UNHANDLED: 'unhandled',
   RECEIVED: 'received',
   HANDLED: 'handled',
+  PENDING: 'pending',
   SENDING: 'sending',
   SENT: 'sent',
   ERROR: 'error'
@@ -37,8 +39,13 @@ Message.prototype.stateMatches = function(strings) {
   return _.contains(downcasedStrings, downcasedState);
 }
 
+Message.prototype.sendTimeIsInPast = function() {
+  return this.sendTime && this.sendTime.isBefore(time.now());
+}
+
 Message.prototype._debug = function() {
-  var debugObj = _.pick(this, 'body channel type state'.split(' '))
+  var args = Array.prototype.slice.call(arguments);
+  var debugObj = _.pick(this, 'body channel type state'.split(' ').concat(args))
   if(this.from) { 
     _.extend(debugObj, { from: this.from._debug() });
   }

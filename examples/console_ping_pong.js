@@ -4,8 +4,8 @@ var User = require('../src/user').User;
 var Actions = messaging.Actions;
 var Filters = messaging.Filters;
 
-//PS - console ping pong lets you enter messages by typing into the console
-//it will respond to help, ping, start, and stop.  if you stop it, it will not longer respond to ping, but it can be started again.
+console.log("console-ping-pong");
+console.log("it will respond to help, ping, start, and stop.  if you stop it, it will not longer respond to ping, but it can be started again.");
 
 //mock users and store
 var typist = new User({
@@ -36,9 +36,9 @@ var receiver = new messaging.Receivers.Console('debug', function(message) {
   chain.handle(message);
 });
 
-//create a responder with debug channel
-var responder = new messaging.Responders.Responder({
-  debug: new messaging.Responders.Console()
+//create a sender with debug channel
+var sender = new messaging.Senders.Sender({
+  debug: new messaging.Senders.Console()
 });
 
 //create the chain
@@ -46,7 +46,7 @@ var chain = new messaging.Chain(
   new messaging.Chain(
     Filters.unhandled(), 
     Filters.hasBody('help'), 
-    Actions.respond('hi', responder),
+    Actions.respond('hi', sender),
     Actions.handled(),
     Actions.save(store)
   ),
@@ -54,7 +54,7 @@ var chain = new messaging.Chain(
     Filters.unhandled(), 
     Filters.hasBody('stop'), 
     Actions.setFromState('stopped'),
-    Actions.respond('stopping', responder),
+    Actions.respond('stopping', sender),
     Actions.handled(),
     Actions.save(store)
   ),
@@ -63,7 +63,7 @@ var chain = new messaging.Chain(
     Filters.hasBody('start'), 
     Filters.hasFromState('stopped'), 
     Actions.setFromState('normal'),
-    Actions.respond('starting', responder),
+    Actions.respond('starting', sender),
     Actions.handled(),
     Actions.save(store)
   ),
@@ -71,7 +71,7 @@ var chain = new messaging.Chain(
     Filters.unhandled(), 
     Filters.hasBody('ping'), 
     Filters.hasFromState('normal'), 
-    Actions.respond('pong', responder),
+    Actions.respond('pong', sender),
     Actions.handled(),
     Actions.save(store)
   )

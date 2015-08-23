@@ -44,9 +44,19 @@ function unhandled() {
   }
 }
 
+function sendTimeIsInPast() {
+  var debug = require('debug')('filters:sendTimeIsInPast');
+  return function(message) {
+    if(message.sendTimeIsInPast()) {
+      return message;
+    }
+  }
+}
+
 module.exports = {
   hasState: hasState,
   hasFromState: hasFromState,
+  sendTimeIsInPast: sendTimeIsInPast,
   hasBody: hasBody,
   unhandled: unhandled
 };

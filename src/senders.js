@@ -2,12 +2,13 @@ var debug = require('debug')('messages:out');
 var util = require('util');
 var _ = require('lodash');
 var Message = require('./message').Message;
+var Promise = require('bluebird');
 
-function Responder(channels) {
+function Sender(channels) {
   this.channels = channels;
 }
 
-Responder.prototype.send = function(message) {
+Sender.prototype.send = function(message) {
   message.type = Message.Types.OUTGOING;
   message.state = Message.States.SENDING;
 
@@ -15,8 +16,8 @@ Responder.prototype.send = function(message) {
     throw new Error('message has no channel');
   }
 
-  var channelResponder = this.channels[message.channel];
-  if(!channelResponder) {
+  var channelSender = this.channels[message.channel];
+  if(!channelSender) {
     throw new Error('no responder for channel: ' + message.channel);
   }
 
@@ -29,28 +30,35 @@ Responder.prototype.send = function(message) {
   if(!address) {
     throw new Error('no address for recipient on channel ' + message.channel);
   }
-  channelResponder._send(message);
+  return Promise.try(function() {
+    return channelSender._send(message);
+  })
+  .then(function(m) {
+    message.state = Message.States.SENDING;
+  });
 }
 
-function DebugResponder() {
+function DebugSender() {
 }
-util.inherits(DebugResponder, Responder);
+util.inherits(DebugSender, Sender);
 
-DebugResponder.prototype._send = function(message) {
+DebugSender.prototype._send = function(message) {
   debug(message._debug());
   debug(message.to);
+  return message;
 }
 
-function ConsoleResponder() {
+function ConsoleSender() {
 }
-util.inherits(ConsoleResponder, Responder);
+util.inherits(ConsoleSender, Sender);
 
-ConsoleResponder.prototype._send = function(message) {
+ConsoleSender.prototype._send = function(message) {
   console.log(message.body);
+  return message;
 }
 
 module.exports = {
-  Responder: Responder,
-  Debug: DebugResponder,
-  Console: ConsoleResponder
+  Sender: Sender,
+  Debug: DebugSender,
+  Console: ConsoleSender
 };

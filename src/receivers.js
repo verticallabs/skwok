@@ -9,6 +9,7 @@ function Receiver(channel, _receive) {
 }
 
 Receiver.prototype.receive = function(message) {
+  message.type = Message.Types.INCOMING;
   this._receive(message);
 }
 
@@ -27,14 +28,13 @@ ConsoleReceiver.prototype.receive = function(message) {
 } 
 
 ConsoleReceiver.prototype._write = function(chunk, encoding, done) {
-  var string = chunk.toString().replace(/\s/g, '');
+  var string = chunk.toString().replace(/\s*$/g, '');
   if(!string) {
     return done();
   }
 
   var message = new Message({ 
     state: Message.States.RECEIVED,
-    type: Message.Types.INCOMING,
     body: string,
     channel: this.channel
   });

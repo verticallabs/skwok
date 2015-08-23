@@ -10,14 +10,14 @@ function save(storeFn) {
   }
 }
 
-function respond(body, responder) {
+function respond(body, sender) {
   var debug = require('debug')('action:respond');
   return function(message) {
-    if(!responder) {
-      throw new Error('no responder declared');
+    if(!sender) {
+      throw new Error('no senderdeclared');
     }
 
-    responder.send(new Message({
+    sender.send(new Message({
       to: message.from,
       from: message.to,
       body: body,
@@ -27,6 +27,19 @@ function respond(body, responder) {
     return message;
   }
 }
+
+function send(sender) {
+  var debug = require('debug')('action:send');
+  return function(message) {
+    if(!sender) {
+      throw new Error('no responder declared');
+    }
+
+    sender.send(message);
+    return message;
+  }
+}
+
 
 function setFromState(state) {
   var debug = require('debug')('action:setFromState');
@@ -57,6 +70,7 @@ module.exports = {
   setFromState: setFromState,
   handled: handled,
   save: save,
+  send: send,
   debug: debugAction
 };
 
