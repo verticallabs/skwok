@@ -3,18 +3,18 @@ var Writable = require('stream').Writable;
 var Message = require('./message').Message;
 var debug = require('debug')('receivers');
 
-function Receiver(channel, _receive) {
+function BaseReceiver(channel, _receive) {
   this.channel = channel;
   this._receive = _receive;
 }
 
-Receiver.prototype.receive = function(message) {
+BaseReceiver.prototype.receive = function(message) {
   message.type = Message.Types.INCOMING;
   this._receive(message);
 }
 
 function ConsoleReceiver(channel, _receive) {
-  Receiver.call(this, channel, _receive);
+  BaseReceiver.call(this, channel, _receive);
   Writable.call(this, { objectMode: true });
 
   this.debug = require('debug')('messages:in');
@@ -22,7 +22,8 @@ function ConsoleReceiver(channel, _receive) {
 }
 util.inherits(ConsoleReceiver, Writable);
 
-ConsoleReceiver.prototype.receive = function(message) {
+ConsoleReceiver.prototype.receive = BaseReceiver.prototype.receive; 
+ConsoleReceiver.prototype._receive = function(message) {
   this.debug(message._debug());
   this._receive(message);
 } 
@@ -45,6 +46,6 @@ ConsoleReceiver.prototype._write = function(chunk, encoding, done) {
 }
 
 module.exports = {
-  Receiver: Receiver,
-  Console: ConsoleReceiver
+  BaseReceiver: BaseReceiver,
+  ConsoleReceiver: ConsoleReceiver
 }

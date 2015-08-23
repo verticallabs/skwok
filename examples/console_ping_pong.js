@@ -27,7 +27,7 @@ function store(message) {
 }
 
 //create a console receiver on debug channel
-var receiver = new skwok.Receivers.Console('debug', function(message) {
+var receiver = new skwok.ChannelReceivers.ConsoleReceiver('debug', function(message) {
   message.from = typist;
   message.to = app;
 
@@ -36,8 +36,8 @@ var receiver = new skwok.Receivers.Console('debug', function(message) {
 });
 
 //create a sender with debug channel
-var sender = new skwok.Senders.Sender({
-  debug: new skwok.Senders.Console()
+var sender = new skwok.Sender({
+  debug: new skwok.ChannelSenders.ConsoleSender()
 });
 
 //create the chain

@@ -37,27 +37,6 @@ Sender.prototype.send = function(message) {
   });
 }
 
-function DebugSender() {
-}
-util.inherits(DebugSender, Sender);
-
-DebugSender.prototype._send = function(message) {
-  debug(message._debug());
-  debug(message.to);
-  return message;
-}
-
-function ConsoleSender() {
-}
-util.inherits(ConsoleSender, Sender);
-
-ConsoleSender.prototype._send = function(message) {
-  console.log(message.body);
-  return message;
-}
-
 module.exports = {
   Sender: Sender,
-  Debug: DebugSender,
-  Console: ConsoleSender
 };
