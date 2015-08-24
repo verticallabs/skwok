@@ -13,7 +13,7 @@ util.inherits(DebugSender, BaseSender);
 
 DebugSender.prototype._send = function(message) {
   debug(message._debug());
-  debug(message.user);
+  debug(message._user);
   return message;
 }
 

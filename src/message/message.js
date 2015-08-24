@@ -1,5 +1,6 @@
 "use strict";
 
+var debug = require('debug')('message');
 var _ = require("lodash");
 var util = require('util');
 var time = require('../time');
@@ -27,19 +28,19 @@ function Message(attributes) {
   }
 }
 
-Message.prototype.bodyMatches = function(strings) {
+Message.prototype._bodyMatches = function(strings) {
   var downcasedStrings = _.map(strings, function(s) { return s.toLowerCase(); });
   var downcasedBody = _.trim(this.body.toLowerCase());
   return _.contains(downcasedStrings, downcasedBody);
 }
 
-Message.prototype.stateMatches = function(strings) {
+Message.prototype._stateMatches = function(strings) {
   var downcasedStrings = _.map(strings, function(s) { return s.toLowerCase(); });
   var downcasedState = _.trim(this.state.toLowerCase());
   return _.contains(downcasedStrings, downcasedState);
 }
 
-Message.prototype.sendTimeIsInPast = function() {
+Message.prototype._sendTimeIsInPast = function() {
   return this.sendTime && this.sendTime.isBefore(time.now());
 }
 

@@ -37,7 +37,8 @@ ConsoleReceiver.prototype._write = function(chunk, encoding, done) {
   var message = new Message({ 
     state: Message.States.RECEIVED,
     body: string,
-    channel: this.channel
+    channel: this.channel,
+    address: 'console'
   });
 
   this.receive(message);

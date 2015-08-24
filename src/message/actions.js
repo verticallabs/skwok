@@ -5,12 +5,14 @@ var Message = require('./message').Message;
 
 function respond(body, sender) {
   return function(message) {
+    debug('respond');
+    debug(message);
     if(!sender) {
       throw new Error('no senderdeclared');
     }
 
     sender.send(new Message({
-      user: message.user,
+      _user: message._user,
       body: body,
       channel: message.channel
     }));

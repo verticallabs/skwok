@@ -6,7 +6,7 @@ function hasState() {
   var states = Array.prototype.slice.call(arguments);
 
   return function(message) {
-    if(message.stateMatches(states)) {
+    if(message._stateMatches(states)) {
       return message;
     }
   }
@@ -16,7 +16,10 @@ function hasBody() {
   var bodies = Array.prototype.slice.call(arguments);
 
   return function(message) {
-    if(message.bodyMatches(bodies)) {
+    debug('hasBody');
+    debug(message);
+
+    if(message._bodyMatches(bodies)) {
       return message;
     }
   }
@@ -32,7 +35,7 @@ function unhandled() {
 
 function sendTimeIsInPast() {
   return function(message) {
-    if(message.sendTimeIsInPast()) {
+    if(message._sendTimeIsInPast()) {
       return message;
     }
   }

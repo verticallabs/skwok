@@ -21,7 +21,7 @@ var messages = [];
 
 //create a console receiver on debug channel
 var receiver = new skwok.ChannelReceivers.ConsoleReceiver('debug', function(message) {
-  message.user = typist;
+  message._user = typist;
   message.state = Message.States.PENDING;
 
   var add = Number(message.body.split(' ')[0]);

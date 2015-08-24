@@ -7,15 +7,17 @@ function Store() {
 }
 
 Store.prototype.save = function(message) {
+  var self = this;
   return Promise.try(function() {
-    return this._save(message);
-  }.bind(this));
+    return self._save(message);
+  });
 }
 
 Store.prototype.attachUser = function(message) {
+  var self = this;
   return Promise.try(function() {
-    return this._attachUser(message);
-  }.bind(this));
+    return self._attachUser(message);
+  });
 }
 
 function CustomStore(obj) {
@@ -29,7 +31,7 @@ function save(store) {
   }
 
   return function(message) {
-    return store.save(message)
+    return store.save(message);
   }
 }
 

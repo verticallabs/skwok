@@ -17,10 +17,10 @@ var typist = new User({
 });
 var store = new skwok.CustomStore({
   _save: function(message) {
-    typist = message.user;
+    typist = message._user;
   },
   _attachUser: function(message) {
-    message.user = typist;
+    message._user = typist;
     return message;
   }
 });
