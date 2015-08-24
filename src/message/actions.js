@@ -3,7 +3,7 @@ var util = require('util');
 var _ = require('lodash');
 var Message = require('./message').Message;
 
-function respond(body, sender) {
+function respond(body, sender, store) {
   return function(message) {
     debug('respond');
     debug(message);
@@ -14,20 +14,20 @@ function respond(body, sender) {
     sender.send(new Message({
       _user: message._user,
       body: body,
-      channel: message.channel
-    }));
+      channel: message.channel,
+    }), store);
 
     return message;
   }
 }
 
-function send(sender) {
+function send(sender, store) {
   return function(message) {
     if(!sender) {
       throw new Error('no responder declared');
     }
 
-    return sender.send(message)
+    return sender.send(message, store)
       .then(function() {
         return message;
       });

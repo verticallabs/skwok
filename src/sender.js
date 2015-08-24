@@ -8,7 +8,7 @@ function Sender(channels) {
   this.channels = channels;
 }
 
-Sender.prototype.send = function(message) {
+Sender.prototype.send = function(message, store) {
   message.type = Message.Types.OUTGOING;
   message.state = Message.States.SENDING;
 
@@ -24,6 +24,7 @@ Sender.prototype.send = function(message) {
   if(!message._user) {
     throw new Error('no recipient for message');
   }
+  message.address = message._user.addresses[message.channel];
 
   if(!message._user.addresses[message.channel]) {
     throw new Error('no address for recipient on channel ' + message.channel);
@@ -31,7 +32,7 @@ Sender.prototype.send = function(message) {
   
   message.state = Message.States.SENDING;
   return Promise.try(function() {
-    return channelSender._send(message);
+    return channelSender.send(message, store);
   });
 }
 

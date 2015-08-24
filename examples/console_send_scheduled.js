@@ -19,6 +19,13 @@ var typist = new User({
 });
 var messages = [];
 
+var store = new skwok.CustomStore({
+  _save: function(message) {
+  },
+  _attachUser: function(message) {
+  }
+});
+
 //create a console receiver on debug channel
 var receiver = new skwok.ChannelReceivers.ConsoleReceiver('debug', function(message) {
   message._user = typist;
@@ -39,7 +46,7 @@ var sender = new skwok.Sender({
 var chain = new skwok.Chain(
   Message.Filters.hasState(Message.States.PENDING), 
   Message.Filters.sendTimeIsInPast(),
-  Message.Actions.send(sender)
+  Message.Actions.send(sender, store)
 );
 
 //every second run each message through the chain

@@ -42,7 +42,7 @@ var chain = new skwok.Chain(
   new skwok.Chain(
     Message.Filters.unhandled(), 
     Message.Filters.hasBody('help'), 
-    Message.Actions.respond('hi', sender),
+    Message.Actions.respond('hi', sender, store),
     Message.Actions.handled(),
     Store.Actions.save(store)
   ),
@@ -51,7 +51,7 @@ var chain = new skwok.Chain(
     Message.Filters.hasBody('stop'), 
     User.Filters.hasState('normal'), 
     User.Actions.setState('stopped'),
-    Message.Actions.respond('stopping', sender),
+    Message.Actions.respond('stopping', sender, store),
     Message.Actions.handled(),
     Store.Actions.save(store)
   ),
@@ -60,7 +60,7 @@ var chain = new skwok.Chain(
     Message.Filters.hasBody('start'), 
     User.Filters.hasState('stopped'), 
     User.Actions.setState('normal'),
-    Message.Actions.respond('starting', sender),
+    Message.Actions.respond('starting', sender, store),
     Message.Actions.handled(),
     Store.Actions.save(store)
   ),
@@ -68,7 +68,7 @@ var chain = new skwok.Chain(
     Message.Filters.unhandled(), 
     Message.Filters.hasBody('ping'), 
     User.Filters.hasState('normal'), 
-    Message.Actions.respond('pong', sender),
+    Message.Actions.respond('pong', sender, store),
     Message.Actions.handled(),
     Store.Actions.save(store)
   )
